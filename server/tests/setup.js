@@ -3,15 +3,21 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
 let mongoServer;
 
+beforeEach(async () => {
+  await User.deleteMany({});
+});
+
 beforeAll(async ()=> {
-    mongoSever = await MongoMemoryServer.create();
+    mongoServer = await MongoMemoryServer.create();
     const mongoURI = mongoServer.getUri();
     await mongoose.connect(mongoURI);
 });
 
-afterAll(async ()=> {
-    await mongoose.disconnect();
+afterAll(async () => {
+  await mongoose.disconnect();
+  if (mongoServer) {
     await mongoServer.stop();
+  }
 });
 
 afterEach(async ()=> {
